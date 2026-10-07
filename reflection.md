@@ -64,6 +64,8 @@ How I verified it: I ran python -m pytest tests and got 2 passed with no failure
 
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 
+  -I learned that Streamlit reruns the whole program whenever you interact with the app. Session state is what keeps things like the score, attempts, and game status from resetting every time. The New Game bug helped me understand why resetting the right state values is important.
+
 ---
 
 ## 5. Looking ahead: your developer habits
@@ -72,3 +74,9 @@ How I verified it: I ran python -m pytest tests and got 2 passed with no failure
   - This could be a testing habit, a prompting strategy, or a way you used Git.
 - What is one thing you would do differently next time you work with AI on a coding task?
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+
+------
+
+Habit to reuse: I’ll keep logging bugs and writing tests that recreate them before fixing them.
+What I’d do differently: I’ll be more specific with AI about exactly what I want it to change.
+How this changed my thinking: I learned that I can’t just trust AI-generated code. I still need to test it myself because AI can miss bugs or give incomplete explanations.

@@ -25,20 +25,31 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+Bugs I found:
+
+Guessing 1 gave the wrong hint because the secret number was converted to text.
+New Game didn't work after losing because the status wasn't reset.
+The secret number could be outside the selected difficulty range.
+The higher/lower hints were swapped.
+
+Fixes I applied:
+
+Fixed number comparisons and hint messages.
+New Game now resets the game correctly and uses the proper difficulty range.
+Moved game logic into logic_utils.py.
+Added two pytest tests for my logged bugs. Both pass.
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
-
+1. Start Normal mode with secret 55.
+2. Guess 40 - “Go HIGHER,” score -5.
+3. Guess 70 - “Go LOWER,” score -10.
+4. Guess 55 - Win, final score 40.
+5. Try guessing again - game says you already won.
+6. Click New Game - everything resets and a new secret number is chosen.
+ 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
 ## 🧪 Test Results
