@@ -30,17 +30,33 @@ Effect: String comparison is lexicographic, not numeric — so "1" > "100" is Fa
 ## 2. How did you use AI as a teammate?
 
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
+  - I used claude code.
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
+  -The AI found that clicking New Game after losing didn’t reset status to "playing", so the game stayed stuck on “Game over.”
+
+How I verified it: I wrote a pytest test that checks the status, attempts, history, and new secret number reset correctly. The test passed.
+
 - Give one example of an AI suggestion you did not accept as written (including what the AI suggested, why you rejected or changed it, and how you verified your version). It does not have to be a suggestion that was wrong: over-engineered, out of scope, harder to read, or a poor fit for this codebase all count.
+  -: The AI added extra tests I didn’t ask for, which caused 3 failures and made the results confusing.
+
+What I changed: I told it to only test my two bugs. It reduced the file to two tests: one for the hint bug and one for New Game after a loss.
+
+How I verified it: I ran python -m pytest tests and got 2 passed with no failures. Each test matches a bug in my bug log.
 
 ---
 
 ## 3. Debugging and testing your fixes
 
 - How did you decide whether a bug was really fixed?
+  -considered a bug fixed when it no longer happened in the situation where I found it. I wrote a pytest test for each bug and checked for the correct results. I ran python -m pytest tests and both tests passed. I also verified that the buggy code was actually changed.
+
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
+  -I ran test_guess_of_one_is_told_to_go_higher, which checks that check_guess(1, 100) returns "Go HIGHER". The test passed after the fixes. I also learned the bug had two causes: string conversion and swapped hint messages, so the test checks the actual message.
+
+
 - Did AI help you design or understand any tests? How?
+  -Yes. AI helped me understand what each test should check and how to recreate the bugs. It also helped me make sure the tests matched the specific issues I found.
 
 ---
 

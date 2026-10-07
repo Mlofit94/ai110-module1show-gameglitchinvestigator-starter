@@ -1,68 +1,13 @@
 import random
 import streamlit as st
 
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
-        return 1, 50
-    return 1, 100
-
-
-def parse_guess(raw: str):
-    if raw is None:
-        return False, None, "Enter a guess."
-
-    if raw == "":
-        return False, None, "Enter a guess."
-
-    try:
-        if "." in raw:
-            value = int(float(raw))
-        else:
-            value = int(raw)
-    except Exception:
-        return False, None, "That is not a number."
-
-    return True, value, None
-
-
-def check_guess(guess, secret):
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-
-    try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
-        else:
-            return "Too Low", "📉 Go LOWER!"
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
-
-
-def update_score(current_score: int, outcome: str, attempt_number: int):
-    if outcome == "Win":
-        points = 100 - 10 * (attempt_number + 1)
-        if points < 10:
-            points = 10
-        return current_score + points
-
-    if outcome == "Too High":
-        if attempt_number % 2 == 0:
-            return current_score + 5
-        return current_score - 5
-
-    if outcome == "Too Low":
-        return current_score - 5
-
-    return current_score
+from logic_utils import (
+    get_range_for_difficulty,
+    parse_guess,
+    check_guess,
+    update_score,
+    reset_game,
+)
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
@@ -130,13 +75,14 @@ with col2:
     new_game = st.button("New Game 🔁")
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
-#FIXME the new_game block resets attempts and 
-# secret but never resets status, 
-# combined with app.py:140-145 which checks status and 
-# calls st.stop() before a new game can begin.  
+# FIXED: the new_game block used to reset attempts and
+# secret but never reset status, combined with the status
+# check below that calls st.stop() before a new game can begin.
+# Collaboration: I found that New Game did nothing after running out of
+# attempts; the AI traced it to the missing status reset, and I had it
+# move the reset into reset_game() so it could be tested.
 if new_game:
-    st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    reset_game(st.session_state, low, high)
     st.success("New game started.")
     st.rerun()
 
@@ -157,16 +103,14 @@ if submit:
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
-        # FIXME:
-        # converts the secret number to a string.
-        # This makes guess > secret in check_guess() (app.py:37) raise a TypeError (int vs str),
-        # which falls into the except block (app.py:41-47) that compares the guess and secret as strings instead of numbers.
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
-
-        outcome, message = check_guess(guess_int, secret)
+        # FIXED: used to convert the secret number to a string on
+        # even-numbered attempts, which made guess > secret in
+        # check_guess() raise a TypeError (int vs str) and fall into
+        # the except block that compared guess and secret as strings
+        # instead of numbers.
+        # Collaboration: I noticed guessing 1 said "Go LOWER"; the AI found the
+        # string conversion causing it, and I logged it before we removed it.
+        outcome, message = check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
             st.warning(message)
