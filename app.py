@@ -154,11 +154,11 @@ if submit:
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
-        # FIXME: 
-        # converts the secret number to a string. 
-        # This makes guess > secret in check_guess() (app.py:37) raise a TypeError (int vs str), 
+        # FIXME:
+        # converts the secret number to a string.
+        # This makes guess > secret in check_guess() (app.py:37) raise a TypeError (int vs str),
         # which falls into the except block (app.py:41-47) that compares the guess and secret as strings instead of numbers.
-        if st.session_state.attempts % 2 == 0: 
+        if st.session_state.attempts % 2 == 0:
             secret = str(st.session_state.secret)
         else:
             secret = st.session_state.secret
