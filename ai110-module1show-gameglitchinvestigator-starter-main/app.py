@@ -130,10 +130,7 @@ with col2:
     new_game = st.button("New Game 🔁")
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
-#FIXME the new_game block resets attempts and 
-# secret but never resets status, 
-# combined with app.py:140-145 which checks status and 
-# calls st.stop() before a new game can begin.  
+
 if new_game:
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(1, 100)
@@ -157,10 +154,7 @@ if submit:
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
-        # FIXME:
-        # converts the secret number to a string.
-        # This makes guess > secret in check_guess() (app.py:37) raise a TypeError (int vs str),
-        # which falls into the except block (app.py:41-47) that compares the guess and secret as strings instead of numbers.
+
         if st.session_state.attempts % 2 == 0:
             secret = str(st.session_state.secret)
         else:
